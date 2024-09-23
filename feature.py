@@ -35,13 +35,16 @@ def normalize(data):
     return normalized_data
 
 def extract_frequency_features(signal, fs):
-    # 进行FFT
-    signal = pd.to_numeric(signal)
+    # 确保信号是 NumPy 数组并转换为 float
+    signal = np.asarray(signal, dtype=float)  # 强制转换为 float
+
+    # 检查 fs 合法性
+    assert fs > 0, "Sampling frequency fs must be greater than 0."
+
+    # 进行 FFT
     fft_result = np.fft.fft(signal)
-    # print("fs:", fs)  # 或者使用 assert fs != 0
-    if fs == 0:
-        fs = 50_000
     freqs = np.fft.fftfreq(len(signal), d=1/fs)
+
     # 取前半部分频率和幅值
     half_length = len(signal) // 2
     magnitude = np.abs(fft_result[:half_length])
@@ -51,7 +54,7 @@ def extract_frequency_features(signal, fs):
     max_freq = frequency[np.argmax(magnitude)]  # 最大幅值对应的频率
     mean_mag = np.mean(magnitude)  # 幅值均值
     std_mag = np.std(magnitude)    # 幅值标准差
-    energy = np.sum(magnitude ** 2) # 能量
+    energy = np.sum(magnitude ** 2)  # 能量
 
     # 返回特征
     return max_freq, mean_mag, std_mag, energy
