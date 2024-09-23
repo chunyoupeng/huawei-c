@@ -1,0 +1,6 @@
+*.xlsx
+*.png
+img/
+imgs/
+all_train.csv
+all_train_*.csv
